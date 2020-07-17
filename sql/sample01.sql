@@ -1,0 +1,1 @@
+SELECT * FROM postgresql.public.{TBLNAME} LIMIT 1
