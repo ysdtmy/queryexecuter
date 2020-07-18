@@ -1,27 +1,44 @@
 # -*-conding utf-8-*-
 
 import importlib
-import configparser
 import prestodb
 import psycopg2
+import yaml
+import logging
 
-# Read Configfile
-dbinfo = configparser.ConfigParser()
-dbinfo.read('./dbinfo.conf', encoding='utf-8')
+logging = logging.getLogger(__name__)
 
 
 class QueryEngine:
 
-    def __init__(self, qe, coninfo):
+    def __init__(self, qe, dbinfo, option=None, *arg, **kwarg):
+        logging.info('QueryEngine : %s', qe)
+        logging.info('DatabaseInfo : %s', dbinfo)
+        logging.info('Option : %s', option)
         self.qe = eval(qe + '()')
-        self.coninfo = coninfo
+        self.dbinfo = dbinfo
+        self.option = option
 
-    def connect(self, *arg, **kwarg):
-        self.con = self.qe.connect(self.coninfo)
+    def connect(self):
+        logging.info('Connecting')
+
+        try:
+            self.con = self.qe.connect(self.dbinfo)
+            logging.info('Connection Sucess')
+        except Exception:
+            logging.error('Connection failed')
+            raise
+
         return True
 
-    def execute(self, sql, *arg, **kwarg):
-        result = self.qe.execute(self.con, sql)
+    def execute(self, sql):
+        try:
+            result = self.qe.execute(self.con, sql)
+            logging.info('Executing Sucess')
+        except Exception:
+            logging.error('Executing failed')
+            raise
+
         return result
 
 
@@ -29,9 +46,8 @@ class DbConnectionSkelton:
 
     def __init__(self):
         self.connectiontype = self.__class__.__name__
-        print("Query Engine : " + self.connectiontype)
 
-    def connect(self, coninfo):
+    def connect(self, dbinfo):
         raise NotImplementedError
 
     def execute(self, con, sql, *arg, **kwarg):
@@ -43,8 +59,8 @@ class SampleDbDef(DbConnectionSkelton):
     def __init__(self):
         super().__init__()
 
-    def connect(self, coninfo):
-        conobj = coninfo
+    def connect(self, dbinfo):
+        conobj = dbinfo
         print('Create Connection Object')
         return conobj
 
@@ -58,18 +74,18 @@ class Postgresql(DbConnectionSkelton):
     def __init__(self):
         super().__init__()
 
-    def connect(self):
+    def connect(self, dbinfo):
         conn = psycopg2.connect(
-            host=self.coninfo['host'], port=self.coninfo['port'], user=self.coninfo[
-                'user'], password=self.coninfo['user'], database=self.coninfo['database']
+            host=dbinfo['host'], port=dbinfo['port'], user=dbinfo[
+                'user'], password=dbinfo['user'], database=dbinfo['database']
         )
 
         return conn
 
     def execute(self, con, sql, *arg, **kwarg):
-        cur = con.cursur()
-        result = cur.execute()
-        rows = result.fetchall()
+        cur = con.cursor()
+        result = cur.execute(sql)
+        rows = cur.fetchall()
         return rows
 
 
@@ -78,10 +94,10 @@ class Presto(DbConnectionSkelton):
     def __init__(self):
         super().__init__()
 
-    def connect(self):
+    def connect(self, dbinfo):
         conn = prestodb.connect(
-            host=self.coninfo['host'], port=self.coninfo['port'], user=self.coninfo[
-                'user'], password=self.coninfo['user'], database=self.coninfo['database']
+            host=dbinfo['host'], port=dbinfo['port'], user=dbinfo[
+                'user'], password=dbinfo['user'], database=dbinfo['database']
         )
 
         return conn
@@ -98,19 +114,8 @@ class Spark(DbConnectionSkelton):
     def __init__(self):
         super().__init__()
 
-    def connect(self):
+    def connect(self, dbinfo):
         pass
 
     def execute(self, con, sql, *arg, **kwarg):
         pass
-
-
-if __name__ == "__main__":
-    lis = ['Postgresql', 'Presto', 'Spark']
-    coninfo = 'MyConnectionInformation'
-    for l in lis:
-        dbdef = QueryEngine(l, coninfo)
-    sql = "SELECT * FROM test.tbl"
-    qe = QueryEngine("SampleDbDef", coninfo)
-    qe.connect()
-    qe.execute(sql)
