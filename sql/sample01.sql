@@ -1,1 +1,5 @@
-SELECT * FROM postgresql.public.{TBLNAME} LIMIT 1
+SELECT 
+  *
+FROM 
+  {database}.{table}
+LIMIT 10

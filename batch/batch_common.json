@@ -1,0 +1,19 @@
+{
+    "DefaltSetting":{
+        "QueryEngine":"Postgresql",
+        "DatabaseInfoFile":"dbinfo.yaml",
+        "DatabaseInfo":"Postgresql",
+        "Parameter":"param/params.json"
+    },
+    "Execute":{
+        "1":{
+            "SQLFile":"sql/sample02.sql"
+        },
+        "2":{
+            "SQLFile":"sql/sample01.sql"
+        },
+        "3":{
+            "SQLFile":"sql/sample01.sql"
+        }
+    }
+}

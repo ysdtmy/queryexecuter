@@ -1,1 +1,1 @@
-SELECT COUNT(*) FROM postgresql.public.{TBLNAME} 
+SELECT COUNT(*) FROM public.T_CALENDAR 
