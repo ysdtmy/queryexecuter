@@ -7,15 +7,16 @@ import argparse
 import json
 import collections
 import yaml
+import datetime
 from QueryEngine import QueryEngine
 
-
-formatter = '%(levelname)s : %(name)s : %(asctime)s : %(message)s'
+formatter = '%(asctime)s : %(levelname)s : %(name)s :  %(message)s'
 logging.basicConfig(level=logging.INFO, format=formatter)
-logging.getLogger(__name__)
+logger = logging.getLogger('queryexecuter')
+logpath = './log/'
 
 
-def main(batchfile, dryrun=False):
+def main(batchfile, dryrun=False, log=False):
 
     def _parse_query(sql, parameterfile):
         with open(parameterfile) as pf:
@@ -53,30 +54,43 @@ def main(batchfile, dryrun=False):
 
         return execute
 
-    logging.info('DRYRUNMODE : %s', dryrun)
-    logging.info('BATCH FILE : %s', batchfile)
+    if log:
+        if not os.path.exists(logpath):
+            os.makedirs(logpath)
+
+        now = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        logname = logpath + 'qe_' + now + '.log'
+        loggerfh = logging.FileHandler(logname)
+        loggerfh.setLevel(logging.INFO)
+        loggerfh.setFormatter(logging.Formatter(formatter))
+        logger.addHandler(loggerfh)
+        logger.info('Logfile Name : %s', logname)
+
+    logger.info('LOGGINIG : %s', log)
+    logger.info('BATCH FILE : %s', batchfile)
+    logger.info('DRYRUNMODE : %s', dryrun)
 
     defautsetting, executes = _parse_batchfile(batchfile)
 
     for step, execute in executes.items():
-        logging.info('QUERYSTEP : %i', int(step))
+        logger.info('QUERYSTEP : %i', int(step))
         setting = _overwritesetting(defautsetting, execute)
         dbinfofile = setting["DatabaseInfoFile"]
         engine = setting["QueryEngine"]
         dbinfo = setting["DatabaseInfo"]
         sqlfile = setting["SQLFile"]
 
-        logging.info('DBinfofile : %s', dbinfofile)
-        logging.info('Engine : %s', engine)
-        logging.info('DBInfo : %s', dbinfo)
-        logging.info('SQLFile : %s', sqlfile)
+        logger.info('DBinfofile : %s', dbinfofile)
+        logger.info('Engine : %s', engine)
+        logger.info('DBInfo : %s', dbinfo)
+        logger.info('SQLFile : %s', sqlfile)
 
         parameter = setting["Parameter"] if "Parameter" in setting.keys(
         ) else None
         option = setting["Option"] if "Option" in setting.keys() else None
 
-        logging.info('ParameterFile : %s', parameter)
-        logging.info('Option : %s', option)
+        logger.info('ParameterFile : %s', parameter)
+        logger.info('Option : %s', option)
 
         targetdbdict = _get_targetdbinfo(dbinfofile, dbinfo)
 
@@ -87,8 +101,8 @@ def main(batchfile, dryrun=False):
         if parameter != None:
             query = _parse_query(query, parameter)
 
-        logging.info('Execute Query')
-        logging.info('\n' + query)
+        logger.info('Execute Query')
+        logger.info('\n' + query)
 
         # Skip connection & execute if dryrun mode.
         if dryrun:
@@ -97,23 +111,24 @@ def main(batchfile, dryrun=False):
         try:
             qe.connect()
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             break
 
         try:
             result = qe.execute(query)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             break
 
-        logging.info('RESULT : %s', result)
+        logger.info('RESULT : %s', result)
 
-    logging.info("END")
+    logger.info("END")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dryrun', action='store_true', default=False)
+    parser.add_argument('--dryrun', '-d', action='store_true', default=False)
     parser.add_argument('--batchfile', '-f')
+    parser.add_argument('--log', '-l', action='store_true', default=False)
     args = parser.parse_args()
-    main(batchfile=args.batchfile, dryrun=args.dryrun)
+    main(batchfile=args.batchfile, dryrun=args.dryrun, log=args.log)

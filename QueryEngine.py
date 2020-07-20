@@ -6,7 +6,7 @@ import psycopg2
 import yaml
 import logging
 
-logging = logging.getLogger(__name__)
+logging = logging.getLogger('queryexecuter').getChild(__name__)
 
 
 class QueryEngine:
