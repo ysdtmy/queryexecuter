@@ -1,5 +1,5 @@
 {
-    "DefaltSetting":{
+    "DefaultSetting":{
         "QueryEngine":"Postgresql",
         "DatabaseInfoFile":"dbinfo.yaml",
         "DatabaseInfo":"Postgresql",

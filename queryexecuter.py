@@ -27,7 +27,7 @@ def main(batchfile, dryrun=False):
     def _parse_batchfile(batchfile):
         with open(batchfile, 'r') as bf:
             batchdict = json.load(bf)
-            defaultsetting = batchdict["DefaltSetting"]
+            defaultsetting = batchdict["DefaultSetting"]
             executes = batchdict["Execute"]
 
         return defaultsetting, executes
