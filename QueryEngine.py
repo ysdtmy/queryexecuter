@@ -76,8 +76,7 @@ class Postgresql(DbConnectionSkelton):
 
     def connect(self, dbinfo):
         conn = psycopg2.connect(
-            host=dbinfo['host'], port=dbinfo['port'], user=dbinfo[
-                'user'], password=dbinfo['user'], database=dbinfo['database']
+          **dbinfo
         )
 
         return conn
@@ -95,7 +94,6 @@ class Presto(DbConnectionSkelton):
         super().__init__()
 
     def connect(self, dbinfo):
-        print(dbinfo)
         conn = prestodb.dbapi.connect(
             **dbinfo
         )
