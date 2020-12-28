@@ -1,0 +1,16 @@
+{
+    "DefaultSetting":{
+        "QueryEngine":"",
+        "DatabaseInfoFile":"",
+        "DatabaseInfo":"",
+        "Parameter":""
+    },
+    "Execute":{
+        "1":{
+            "QueryEngine":"",
+            "DatabaseInfo":"",
+            "SQLFile":""
+        }
+        
+    }
+}

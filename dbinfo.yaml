@@ -2,10 +2,12 @@ Presto:
   host: localhost
   port: 8080
   user: postgres
+  schema: default
+  catalog: postgresql
 
 Postgresql:
   host: localhost
   port: 5432
   user: postgres
   password: postgres
-  database: kaggle_M5
+  database: default

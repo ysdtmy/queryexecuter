@@ -1,0 +1,16 @@
+{
+    "DefaultSetting":{
+        "QueryEngine":"Presto",
+        "DatabaseInfoFile":"dbinfo.yaml",
+        "DatabaseInfo":"Presto",
+        "Parameter":"param/params_presto.json"
+    },
+    "Execute":{
+        "1":{
+            "SQLFile":"sql/sample01.sql"
+        },
+        "2":{
+            "SQLFile":"sql/sample01.sql"
+        }
+    }
+}

@@ -9,18 +9,12 @@
         "1":{
             "QueryEngine":"Postgresql",
             "DatabaseInfo":"Postgresql",
-            "SQLFile":"sql/sample02.sql"
+            "SQLFile":"sql/sample01.sql"
         },
         "2":{
             "QueryEngine":"Postgresql",
             "DatabaseInfo":"Postgresql",
             "SQLFile":"sql/sample01.sql"
-        },
-        "3":{
-            "QueryEngine":"Postgresql",
-            "DatabaseInfo":"Postgresql",
-            "SQLFile":"sql/sample01.sql",
-            "Parameter":"param/params_adhoc.json"
         }
     }
 }

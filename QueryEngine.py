@@ -95,17 +95,23 @@ class Presto(DbConnectionSkelton):
         super().__init__()
 
     def connect(self, dbinfo):
-        conn = prestodb.connect(
-            host=dbinfo['host'], port=dbinfo['port'], user=dbinfo[
-                'user'], password=dbinfo['user'], database=dbinfo['database']
+        print(dbinfo)
+        conn = prestodb.dbapi.connect(
+            **dbinfo
         )
 
         return conn
 
+
     def execute(self, con, sql, *arg, **kwarg):
-        cur = con.cursur()
-        result = cur.execute()
-        rows = result.fetchall()
+
+        def _remove_semicolon(targetsql):
+            sql_parsed = targetsql.replace(";", "")
+            return sql_parsed
+
+        cur = con.cursor()
+        result = cur.execute(_remove_semicolon(sql))
+        rows = cur.fetchall()
         return rows
 
 
