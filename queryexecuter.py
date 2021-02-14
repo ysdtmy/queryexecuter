@@ -128,7 +128,7 @@ def main(batchfile, dryrun=False, log=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--dryrun', '-d', action='store_true', default=False)
-    parser.add_argument('--batchfile', '-f')
+    parser.add_argument('--batchfile', '-f', required=True)
     parser.add_argument('--log', '-l', action='store_true', default=False)
     args = parser.parse_args()
     main(batchfile=args.batchfile, dryrun=args.dryrun, log=args.log)

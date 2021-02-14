@@ -24,9 +24,9 @@ class QueryEngine:
 
         try:
             self.con = self.qe.connect(self.dbinfo)
-            logging.info('Connection Sucess')
+            logging.info('Connection Success')
         except Exception:
-            logging.error('Connection failed')
+            logging.error('Connection Failed')
             raise
 
         return True
@@ -34,9 +34,9 @@ class QueryEngine:
     def execute(self, sql):
         try:
             result = self.qe.execute(self.con, sql)
-            logging.info('Executing Sucess')
+            logging.info('Execute Success')
         except Exception:
-            logging.error('Executing failed')
+            logging.error('Execue Failed')
             raise
 
         return result
